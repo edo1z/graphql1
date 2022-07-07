@@ -2,6 +2,8 @@ import { ApolloServer } from "apollo-server";
 import { books } from "./data/books";
 import { authors } from "./data/authors";
 import { typeDefs } from "./typeDefs";
+import { BookId } from "./model/book";
+import { AuthorId } from "./model/author";
 
 const resolvers = {
   Query: {
@@ -11,6 +13,9 @@ const resolvers = {
         return { ...book, author };
       });
     },
+    book: (parent: any, args: BookId, context: any, info: any) => {
+      return books.find((book) => book.id === args.id);
+    },
     authors: () => {
       return authors.map((author) => {
         const books_of_author = author.book_ids.map((book_id) => {
@@ -18,6 +23,9 @@ const resolvers = {
         });
         return { ...author, books: books_of_author };
       });
+    },
+    author: (parent: any, args: AuthorId, context: any, info: any) => {
+      return authors.find((author) => author.id === args.id);
     },
   },
 };
