@@ -28,6 +28,13 @@ const resolvers = {
       return authors.find((author) => author.id === args.id);
     },
   },
+  Book: {
+    author: (parent: any) =>
+      authors.find((author: any) => author.id === parent.author_id),
+  },
+  Author: {
+    books: (parent: any) => books.filter((book) => book.author_id == parent.id),
+  },
 };
 
 const server = new ApolloServer({
