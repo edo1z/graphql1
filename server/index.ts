@@ -37,11 +37,22 @@ const resolvers = {
   },
 };
 
+const logger = {
+  async requestDidStart(requestContext: any) {
+    return {
+      async didEncounterErrors(requestContext: any) {
+        console.log("Error!", requestContext.errors);
+      },
+    };
+  },
+};
+
 const server = new ApolloServer({
   typeDefs,
   resolvers,
   csrfPrevention: true,
   cache: "bounded",
+  plugins: [logger],
 });
 
 server.listen().then(({ url }) => {
