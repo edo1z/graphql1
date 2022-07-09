@@ -53,7 +53,12 @@ const logger = {
   async requestDidStart() {
     return {
       async didEncounterErrors(requestContext: any) {
-        console.log("Error!", requestContext.errors);
+        console.log(
+          "Error!",
+          requestContext.errors,
+          "[Query]",
+          requestContext.request.query
+        );
       },
     };
   },
