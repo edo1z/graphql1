@@ -1,13 +1,20 @@
 import { Author } from "./author";
 
 export type Book = {
-  id: Number;
-  title: String;
-  author: Author;
-  price: Number;
-  stock: Boolean;
+  id: string;
+  title: string;
+  authorId: string;
+  price: number;
+  stock: boolean;
 };
 
-export type BookId = {
-  id: Number;
+export type BookID = {
+  id: string;
+};
+
+export type BookInput = {
+  title: string;
+  authorId: string;
+  price: number;
+  stock: boolean;
 };

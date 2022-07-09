@@ -2,7 +2,7 @@ import { gql } from "apollo-server";
 
 export const typeDefs = gql`
   type Book {
-    id: Int!
+    id: ID!
     title: String!
     author: Author!
     price: Int
@@ -10,15 +10,26 @@ export const typeDefs = gql`
   }
 
   type Author {
-    id: Int!
+    id: ID!
     name: String!
     books: [Book]
   }
 
   type Query {
     books: [Book]
-    book(id: Int!): Book
+    book(id: ID!): Book
     authors: [Author]
-    author(id: Int!): Author
+    author(id: ID!): Author
+  }
+
+  type Mutation {
+    addBook(book: BookInput!): Book
+  }
+
+  input BookInput {
+    title: String!
+    authorId: ID!
+    price: Int
+    stock: Boolean
   }
 `;

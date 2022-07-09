@@ -2,43 +2,55 @@ import { ApolloServer } from "apollo-server";
 import { books } from "./data/books";
 import { authors } from "./data/authors";
 import { typeDefs } from "./typeDefs";
-import { BookId } from "./model/book";
-import { AuthorId } from "./model/author";
+import { BookID, BookInput } from "./model/book";
+import { AuthorID } from "./model/author";
+import { v4 as uuidv4 } from "uuid";
 
 const resolvers = {
   Query: {
     books: () => {
       return books.map((book) => {
-        const author = authors.find((author) => author.id === book.author_id);
+        const author = authors.find((author) => author.id === book.authorId);
         return { ...book, author };
       });
     },
-    book: (parent: any, args: BookId, context: any, info: any) => {
+    book: (parent: any, args: BookID, context: any, info: any) => {
       return books.find((book) => book.id === args.id);
     },
     authors: () => {
       return authors.map((author) => {
-        const books_of_author = author.book_ids.map((book_id) => {
-          return books.find((book) => book.id === book_id);
+        const booksOfAuthor = author.bookIDs.map((bookId) => {
+          return books.find((book) => book.id === bookId);
         });
-        return { ...author, books: books_of_author };
+        return { ...author, books: booksOfAuthor };
       });
     },
-    author: (parent: any, args: AuthorId, context: any, info: any) => {
+    author: (parent: any, args: AuthorID, context: any, info: any) => {
       return authors.find((author) => author.id === args.id);
     },
   },
   Book: {
     author: (parent: any) =>
-      authors.find((author: any) => author.id === parent.author_id),
+      authors.find((author: any) => author.id === parent.authorId),
   },
   Author: {
-    books: (parent: any) => books.filter((book) => book.author_id == parent.id),
+    books: (parent: any) => books.filter((book) => book.authorId == parent.id),
+  },
+  Mutation: {
+    addBook: (parent: any, args: any, context: any, info: any) => {
+      const bookInput: BookInput = args.book;
+      const newBook = {
+        id: uuidv4(),
+        ...bookInput,
+      };
+      books.push(newBook);
+      return newBook;
+    },
   },
 };
 
 const logger = {
-  async requestDidStart(requestContext: any) {
+  async requestDidStart() {
     return {
       async didEncounterErrors(requestContext: any) {
         console.log("Error!", requestContext.errors);
